@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 export class PreloadScene extends Phaser.Scene {
   private debugText?: Phaser.GameObjects.Text;
@@ -46,7 +46,7 @@ export class PreloadScene extends Phaser.Scene {
     });
     
     // Handle file load errors
-    this.load.on('loaderror', (file: any) => {
+    this.load.on('loaderror', (file: Phaser.Loader.File) => {
       console.error('Error loading asset:', file.key);
       this.loadedAssets[file.key] = false;
       if (this.debugText) {

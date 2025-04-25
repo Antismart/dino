@@ -175,7 +175,7 @@ export function Leaderboard({ className = '' }: LeaderboardProps) {
             <form onSubmit={handleChallengeSubmit} className="space-y-3">
               <div>
                 <label className="block text-sm text-[var(--app-foreground-muted)] mb-1">
-                  Friend's Address or FID:
+                  Friend&apos;s Address or FID:
                 </label>
                 <input 
                   type="text" 

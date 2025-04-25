@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 interface GameObjects {
   ground?: Phaser.GameObjects.TileSprite;
@@ -72,7 +72,7 @@ export class GameScene extends Phaser.Scene {
       this.debugText.setText('Error creating ground. Using fallback...');
       
       // Create a fallback ground as a plain rectangle
-      const groundRect = this.add.rectangle(
+      const fallbackGroundRect = this.add.rectangle(
         0,
         (height as number) - 30,
         width as number,
@@ -92,16 +92,18 @@ export class GameScene extends Phaser.Scene {
       this.physics.add.existing(this.gameObjects.ground, true);
     }
     
-    // Create a test rectangle to verify positioning
-    const testRect = this.add.rectangle(
-      100, 
-      (height as number) - 60,
-      40,
-      60,
-      0xFF0000
-    ).setOrigin(0.5, 1).setDepth(100);
+    // Create a debug rectangle to verify positioning (only in development)
+    if (process.env.NODE_ENV !== 'production') {
+      this.add.rectangle(
+        100, 
+        (height as number) - 60,
+        40,
+        60,
+        0xFF0000
+      ).setOrigin(0.5, 1).setDepth(100);
+    }
     
-    // Create dino character - NEW APPROACH
+    // Create dino character
     this.debugText.setText('Creating dinosaur at center...');
     try {
       // Force position the dinosaur in the middle of the screen where it will be visible
@@ -128,7 +130,7 @@ export class GameScene extends Phaser.Scene {
       this.debugText.setText('ERROR: Failed to create dinosaur');
       
       // Last resort: Create a rectangle where dinosaur should be
-      const fallbackDino = this.add.rectangle(
+      this.add.rectangle(
         100, 
         (height as number) - 60, 
         40, 
@@ -245,24 +247,26 @@ export class GameScene extends Phaser.Scene {
     
     // Update obstacles
     if (this.gameObjects.obstacles) {
-      this.gameObjects.obstacles.getChildren().forEach((obstacle: any) => {
-        obstacle.x -= this.gameSpeed;
+      this.gameObjects.obstacles.getChildren().forEach((obstacle: Phaser.GameObjects.GameObject) => {
+        const obstacleSprite = obstacle as Phaser.Physics.Arcade.Sprite;
+        obstacleSprite.x -= this.gameSpeed;
         
         // Remove obstacles when they go off-screen
-        if (obstacle.x < -obstacle.width) {
-          obstacle.destroy();
+        if (obstacleSprite.x < -obstacleSprite.width) {
+          obstacleSprite.destroy();
         }
       });
     }
     
     // Update clouds
     if (this.gameObjects.clouds) {
-      this.gameObjects.clouds.getChildren().forEach((cloud: any) => {
-        cloud.x -= this.gameSpeed / 2;
+      this.gameObjects.clouds.getChildren().forEach((cloud: Phaser.GameObjects.GameObject) => {
+        const cloudImage = cloud as Phaser.GameObjects.Image;
+        cloudImage.x -= this.gameSpeed / 2;
         
         // Remove clouds when they go off-screen
-        if (cloud.x < -cloud.width) {
-          cloud.destroy();
+        if (cloudImage.x < -cloudImage.width) {
+          cloudImage.destroy();
         }
       });
     }

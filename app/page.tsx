@@ -27,7 +27,6 @@ import { Leaderboard } from './components/Leaderboard';
 export default function App() {
   const { setFrameReady, isFrameReady, context } = useMiniKit();
   const [frameAdded, setFrameAdded] = useState(false);
-  const [activeTab, setActiveTab] = useState("dinorun");
   const [gameMode, setGameMode] = useState("solo");
 
   const addFrame = useAddFrame();

@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 interface GameOverSceneData {
   score: number;
@@ -29,7 +29,7 @@ export class GameOverScene extends Phaser.Scene {
       .setOrigin(0, 0);
       
     // Add game over image
-    const gameOver = this.add.image(
+    const gameOverImage = this.add.image(
       width as number / 2,
       height as number / 3,
       'game-over'
