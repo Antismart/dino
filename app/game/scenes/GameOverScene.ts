@@ -1,4 +1,5 @@
-import * as Phaser from 'phaser';
+import { Scene } from 'phaser';
+import { gameController } from '@/lib/game-controller';
 
 interface GameOverSceneData {
   score: number;
@@ -6,7 +7,7 @@ interface GameOverSceneData {
   gameMode?: string;
 }
 
-export class GameOverScene extends Phaser.Scene {
+export class GameOverScene extends Scene {
   private score: number = 0;
   private highScore: number = 0;
   private gameMode: string = 'solo';
@@ -19,6 +20,20 @@ export class GameOverScene extends Phaser.Scene {
     this.score = data.score;
     this.highScore = data.highScore;
     this.gameMode = data.gameMode || 'solo';
+    
+    // Submit score to the game controller
+    this.submitScore();
+  }
+  
+  private submitScore(): void {
+    // Submit score to the game controller for leaderboard and challenges
+    gameController.submitScore(this.score)
+      .then(success => {
+        console.log('Score submission ' + (success ? 'succeeded' : 'failed'));
+      })
+      .catch(err => {
+        console.error('Error submitting score:', err);
+      });
   }
 
   create() {
@@ -29,7 +44,7 @@ export class GameOverScene extends Phaser.Scene {
       .setOrigin(0, 0);
       
     // Add game over image
-    const gameOverImage = this.add.image(
+    this.add.image(
       width as number / 2,
       height as number / 3,
       'game-over'

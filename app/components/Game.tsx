@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
-import Phaser from 'phaser';
+import { Game as PhaserGame, AUTO, Scale, Types } from 'phaser';
 import { PreloadScene } from '../game/scenes/PreloadScene';
 import { GameScene } from '../game/scenes/GameScene';
 import { GameOverScene } from '../game/scenes/GameOverScene';
@@ -11,7 +11,7 @@ interface DinoGameProps {
 }
 
 export function DinoGame({ gameMode = 'challenge' }: DinoGameProps) {
-  const gameRef = useRef<Phaser.Game | null>(null);
+  const gameRef = useRef<PhaserGame | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [gameError, setGameError] = useState<string | null>(null);
   const [isGameReady, setIsGameReady] = useState(false);
@@ -28,13 +28,13 @@ export function DinoGame({ gameMode = 'challenge' }: DinoGameProps) {
           containerRef.current.style.display = 'block';
         }
 
-        const config: Phaser.Types.Core.GameConfig = {
-          type: Phaser.AUTO,
+        const config: Types.Core.GameConfig = {
+          type: AUTO,
           parent: containerRef.current,
           backgroundColor: '#ffffff',
           scale: {
-            mode: Phaser.Scale.FIT,
-            autoCenter: Phaser.Scale.CENTER_BOTH,
+            mode: Scale.FIT,
+            autoCenter: Scale.CENTER_BOTH,
             width: 800,
             height: 300
           },
@@ -49,7 +49,7 @@ export function DinoGame({ gameMode = 'challenge' }: DinoGameProps) {
         };
 
         console.log('Creating Phaser game with container:', containerRef.current);
-        gameRef.current = new Phaser.Game(config);
+        gameRef.current = new PhaserGame(config);
         
         // Pass gameMode to the game scenes
         gameRef.current.registry.set('gameMode', gameMode);

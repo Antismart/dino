@@ -1,7 +1,7 @@
-import * as Phaser from 'phaser';
+import { Scene, GameObjects, Loader } from 'phaser';
 
-export class PreloadScene extends Phaser.Scene {
-  private debugText?: Phaser.GameObjects.Text;
+export class PreloadScene extends Scene {
+  private debugText?: GameObjects.Text;
   private loadedAssets: Record<string, boolean> = {};
 
   constructor() {
@@ -46,7 +46,7 @@ export class PreloadScene extends Phaser.Scene {
     });
     
     // Handle file load errors
-    this.load.on('loaderror', (file: Phaser.Loader.File) => {
+    this.load.on('loaderror', (file: Loader.File) => {
       console.error('Error loading asset:', file.key);
       this.loadedAssets[file.key] = false;
       if (this.debugText) {

@@ -1,26 +1,26 @@
-import * as Phaser from 'phaser';
+import { Scene, Types, GameObjects, Physics, Math as PhaserMath, Input, Sound } from 'phaser';
 
 interface GameObjects {
-  ground?: Phaser.GameObjects.TileSprite;
-  dino?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-  obstacles?: Phaser.Physics.Arcade.Group;
-  clouds?: Phaser.GameObjects.Group;
-  scoreText?: Phaser.GameObjects.Text;
-  gameModeText?: Phaser.GameObjects.Text;
+  ground?: GameObjects.TileSprite;
+  dino?: Types.Physics.Arcade.SpriteWithDynamicBody;
+  obstacles?: Physics.Arcade.Group;
+  clouds?: GameObjects.Group;
+  scoreText?: GameObjects.Text;
+  gameModeText?: GameObjects.Text;
 }
 
-export class GameScene extends Phaser.Scene {
+export class GameScene extends Scene {
   private gameSpeed: number = 10;
   private spawnTime: number = 0;
   private score: number = 0;
   private isGameRunning: boolean = false;
   private gameObjects: GameObjects = {};
-  private jumpSound?: Phaser.Sound.BaseSound;
-  private hitSound?: Phaser.Sound.BaseSound;
-  private pointSound?: Phaser.Sound.BaseSound;
+  private jumpSound?: Sound.BaseSound;
+  private hitSound?: Sound.BaseSound;
+  private pointSound?: Sound.BaseSound;
   private gameMode: string = 'solo';
   private animationsReady: boolean = false;
-  private debugText?: Phaser.GameObjects.Text;
+  private debugText?: GameObjects.Text;
 
   constructor() {
     super({ key: 'GameScene' });
@@ -230,13 +230,13 @@ export class GameScene extends Phaser.Scene {
     
     // Spawn obstacles
     this.spawnTime += delta;
-    if (this.spawnTime >= Phaser.Math.Between(1500, 3000)) {
+    if (this.spawnTime >= PhaserMath.Between(1500, 3000)) {
       this.spawnObstacle();
       this.spawnTime = 0;
     }
     
     // Spawn clouds occasionally
-    if (Phaser.Math.Between(0, 1000) > 990) {
+    if (PhaserMath.Between(0, 1000) > 990) {
       this.spawnCloud();
     }
     
@@ -247,8 +247,8 @@ export class GameScene extends Phaser.Scene {
     
     // Update obstacles
     if (this.gameObjects.obstacles) {
-      this.gameObjects.obstacles.getChildren().forEach((obstacle: Phaser.GameObjects.GameObject) => {
-        const obstacleSprite = obstacle as Phaser.Physics.Arcade.Sprite;
+      this.gameObjects.obstacles.getChildren().forEach((obstacle: GameObjects.GameObject) => {
+        const obstacleSprite = obstacle as Physics.Arcade.Sprite;
         obstacleSprite.x -= this.gameSpeed;
         
         // Remove obstacles when they go off-screen
@@ -260,8 +260,8 @@ export class GameScene extends Phaser.Scene {
     
     // Update clouds
     if (this.gameObjects.clouds) {
-      this.gameObjects.clouds.getChildren().forEach((cloud: Phaser.GameObjects.GameObject) => {
-        const cloudImage = cloud as Phaser.GameObjects.Image;
+      this.gameObjects.clouds.getChildren().forEach((cloud: GameObjects.GameObject) => {
+        const cloudImage = cloud as GameObjects.Image;
         cloudImage.x -= this.gameSpeed / 2;
         
         // Remove clouds when they go off-screen
@@ -318,7 +318,7 @@ export class GameScene extends Phaser.Scene {
     }
   }
   
-  private handlePointerDown(pointer: Phaser.Input.Pointer) {
+  private handlePointerDown(pointer: Input.Pointer) {
     if (!this.isGameRunning) return;
     
     // Jump if tap on upper half of screen, duck if tap on lower half
@@ -339,11 +339,11 @@ export class GameScene extends Phaser.Scene {
     
     // Choose randomly between cactus or bird, only using bird if animations are available
     const canUseBird = this.animationsReady;
-    const obstacleType = canUseBird && Phaser.Math.Between(0, 10) > 8 ? 'bird' : 'cactus';
+    const obstacleType = canUseBird && PhaserMath.Between(0, 10) > 8 ? 'bird' : 'cactus';
     
     if (obstacleType === 'bird') {
       // Birds fly at different heights
-      const birdHeight = Phaser.Math.Between(1, 2) === 1 
+      const birdHeight = PhaserMath.Between(1, 2) === 1 
         ? (height as number) - 90  // High bird
         : (height as number) - 60; // Low bird
       
@@ -367,7 +367,7 @@ export class GameScene extends Phaser.Scene {
       }
     } else {
       // Various cactus types
-      const cactusNum = Phaser.Math.Between(1, 6);
+      const cactusNum = PhaserMath.Between(1, 6);
       const cactusSize = cactusNum <= 3 ? 'small' : 'big';
       const cactusVariant = ((cactusNum - 1) % 3) + 1;
       const cactusKey = `cactus-${cactusSize}-${cactusVariant}`;
@@ -402,7 +402,7 @@ export class GameScene extends Phaser.Scene {
     if (!this.isGameRunning) return;
     
     const { width, height } = this.game.config;
-    const cloudY = Phaser.Math.Between(30, (height as number) / 2);
+    const cloudY = PhaserMath.Between(30, (height as number) / 2);
     
     try {
       if (this.textures.exists('cloud')) {
